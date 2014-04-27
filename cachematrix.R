@@ -19,10 +19,10 @@ makeCacheMatrix <- function(x = matrix()) {
          setinverse = setinverse,
          getinverse = getinverse)
 }
-a <-makeCacheMatrix(matrix(1:4,2))
+a <-makeCacheMatrix(matrix(1:4,2)) # the following lines have been used for testing
 a
 a$get()
-a$set(matrix(1:9,3))
+a$set(matrix(1:9,3)) # change data and dim of matrix
 a$get()
 
 ## Write a short comment describing this function
