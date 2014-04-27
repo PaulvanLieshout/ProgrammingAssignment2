@@ -4,8 +4,10 @@
 ## Write a short comment describing this function 
 # PvL 26/04/14 - non square matrices do not have an inverse matrix
 # as such the required matrix has to be a 'square matrix'
-# as such input to makeCacheMatrix can be matrix(1:9,3) without nrow and ncol
-# using this to change example in following - runs ok
+# is also has to be an invertable matrix
+# 3x3 matrix used below is an invertable matrix used for testing
+
+##following function stores a matrix in the cashe (using <<-)
 makeCacheMatrix <- function(x = matrix()) {
     m <- NULL
     set <- function(y) {
@@ -19,15 +21,33 @@ makeCacheMatrix <- function(x = matrix()) {
          setinverse = setinverse,
          getinverse = getinverse)
 }
-a <-makeCacheMatrix(matrix(1:4,2)) # the following lines have been used for testing
-a
-a$get()
-a$set(matrix(1:9,3)) # change data and dim of matrix
-a$get()
+# above function tested in previous rev
 
-## Write a short comment describing this function
+## PvL 27/04/14 following function calculates the inverse of a matrix
+# which was retrieved from the above function (from cache)
+# the result of this is also stored in cache i.e. when the function is run a 2nd time
+# the result is not computed again but is taken from cache
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
+    m <- x$getinverse()
+    if(!is.null(m)) {
+        message("getting cached data")
+        return(m)
+    }
+    data <- x$get()
+    m <- solve(data, ...)
+    x$setinverse(m)
+    m
 }
 
+#testing of above functions starting testing 1st function (i.e.makeCacheMatrix)
+a <-makeCacheMatrix(matrix(1:4,2)) 
+a$get()
+a$set(matrix(c(2,2,3,2,5,4,7,8,9),3)) # change data and dim of matrix
+a$get()
+solve(a$get()) # to see what the inverse of the matrix is
+#testing of 2nd function i.e. cacheSolve
+cacheSolve(a) # using the above defined matrix and compare with solve(a$get())
+#other test is multiplying the two matrices
+a$get() %*% cacheSolve(a) # this should be the identity matrix (more or less!)
